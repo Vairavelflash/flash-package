@@ -11,7 +11,7 @@ interface InputDropDownProps {
   value: string;
   onChange: (name: string, value: boolean | string) => void;
   className?: string;
-  disable?: boolean;
+  disabled?: boolean;
   slice?: number;
   Lefticon?: React.ReactNode;
   Righticon?: React.ReactNode;
@@ -25,7 +25,7 @@ export const Dropdown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
       value,
       onChange,
       className = "",
-      disable = false,
+      disabled = false,
       slice = 10,
       Lefticon,
       Righticon,
@@ -40,7 +40,7 @@ export const Dropdown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
     };
 
     const handleSelect = (data: string) => {
-      if (!disable && onChange) {
+      if (!disabled && onChange) {
         onChange(name, data);
         setIsOpen(false);
       }

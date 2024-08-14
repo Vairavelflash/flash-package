@@ -6,7 +6,7 @@ interface InputSliderProps {
   className?: string;
   label?: string;
   value: number;
-  onChange?: (name: string, value: boolean | string | number) => void;
+  onChange: (name: string, value: boolean | string | number) => void;
   icon?: React.ReactNode;
   disabled?: boolean;
   orientation?: string;

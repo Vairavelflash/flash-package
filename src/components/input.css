@@ -174,3 +174,7 @@
     overflow: hidden;
     text-overflow: ellipsis; 
   }
+  .f-helpertext{
+    text-align: left;
+    white-space: nowrap;
+  }

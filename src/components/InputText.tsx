@@ -1,6 +1,6 @@
 import React, { Ref, useEffect, useState } from "react";
 import { getFlexDirection } from "./Common";
-import './input.css'
+import "./input.css";
 //common alignment object
 
 interface InputTextProps {
@@ -14,6 +14,7 @@ interface InputTextProps {
   disabled?: boolean;
   fieldName?: string;
   orientation?: string;
+  helperText?: string;
 }
 export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
   (
@@ -28,6 +29,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
       disabled = false,
       fieldName,
       orientation = "horizontal",
+      helperText,
     }: InputTextProps,
     ref: Ref<HTMLInputElement>
   ) => {
@@ -75,30 +77,41 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
         ) : null}
 
         <div
-          className={` w-full h-full flex items-center border rounded f-textbody ${
-            isFocused ? "--onFocus--" : ""
-          }`}
+          className={`w-full h-full flex  gap-0.5 ${flexDirection} ${
+            fieldName ? "items-start" : "items-center"
+          } f-inputbody`}
         >
-          {/* Input Text */}
-          <input
-            id={name}
-            name={name}
-            ref={ref}
-            className="text-[14px] leading-5 font-normal text-Gray-900 min-h-[26px] w-full rounded bg-inherit pl-2 f-text"
-            type="text"
-            placeholder={placeholder}
-            value={data}
-            onChange={handleChange}
-            onFocus={handleOnFocus}
-            onBlur={handleBlur}
-            disabled={disabled}
-          />
-          {/* Helper Text */}
-          {fieldName && (
-            <div className="flex items-center  f-field">
-              <label className="Text-10 text-Gray-600 " htmlFor={name}>
-                {data.length > 0 ? fieldName : "--"}
-              </label>
+          <div
+            className={` w-full h-full flex items-center border rounded f-text px-1 ${
+              isFocused ? "--onFocus--" : ""
+            }`}
+          >
+            {/* Input Text */}
+            <input
+              id={name}
+              name={name}
+              ref={ref}
+              className="text-[14px] leading-5 font-normal text-Gray-900 min-h-[26px] w-full rounded bg-inherit f-text"
+              type="text"
+              placeholder={placeholder}
+              value={data}
+              onChange={handleChange}
+              onFocus={handleOnFocus}
+              onBlur={handleBlur}
+              disabled={disabled}
+            />
+            {/* Helper Text */}
+            {fieldName && (
+              <div className="flex items-center  f-field">
+                <label className="Text-10 text-Gray-600 " htmlFor={name}>
+                  {fieldName}
+                </label>
+              </div>
+            )}
+          </div>
+          {helperText && (
+            <div className="f-helpertext">
+              <p className="Text-12-400  text-Gray-900 ">{helperText}</p>
             </div>
           )}
         </div>

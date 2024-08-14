@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { getFlexDirection } from "./Common";
-import './input.css'
+import "./input.css";
 
 interface InputRadioProps {
   name: string;
@@ -11,7 +11,8 @@ interface InputRadioProps {
   icon?: React.ReactNode;
   orientation?: string;
   disabled?: boolean;
-  checked?: boolean;
+  label?: string;
+  isSelected: boolean;
 }
 
 export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
@@ -25,18 +26,12 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
       icon,
       orientation = "horizontal",
       disabled = false,
-      checked = false,
+      isSelected = false,
+      label = "",
     }: InputRadioProps,
     ref
   ) => {
-    const [select, setSelect] = useState<boolean>(checked);
-
-    useEffect(() => {
-      setSelect(checked);
-    }, [checked]);
-
     const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSelect((prev) => !prev);
       if (onChange) {
         onChange(name, e.target.value);
       }
@@ -58,7 +53,7 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
           ref={ref}
           className="bg-black accent-black f-radio"
           type="radio"
-          defaultChecked={select}
+          checked={isSelected}
           onChange={handleClick}
           disabled={disabled}
         />
@@ -74,10 +69,10 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
           {/* Label & helperText */}
           <div className="flex flex-col">
             <label
-              className="Text-12-400 whitespace-nowrap f-label--"
+              className="Text-12-400 whitespace-nowrap f-label"
               htmlFor={value}
             >
-              {value}
+              {label}
             </label>
             {helperText && (
               <p className="Text-12-400  text-Gray-900 f-helpertext">

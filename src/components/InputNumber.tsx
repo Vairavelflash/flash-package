@@ -1,6 +1,6 @@
 import React, { Ref, useEffect, useState } from "react";
 import { getFlexDirection } from "./Common";
-import './input.css'
+import "./input.css";
 interface InputNumberProps {
   name: string;
   className?: string;
@@ -12,6 +12,7 @@ interface InputNumberProps {
   disabled?: boolean;
   fieldName?: string;
   orientation?: string;
+  helperText?: string;
 }
 export const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
   (
@@ -26,6 +27,7 @@ export const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
       disabled = false,
       fieldName,
       orientation = "horizontal",
+      helperText,
     }: InputNumberProps,
     ref: Ref<HTMLInputElement>
   ) => {
@@ -75,32 +77,42 @@ export const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
             )}
           </div>
         ) : null}
-
         <div
-          className={` w-full h-full flex items-center px-2 border rounded f-number ${
-            isFocused ? "--onFocus--" : ""
-          }`}
+          className={`w-full h-full flex  gap-0.5 ${flexDirection} ${
+            fieldName ? "items-start" : "items-center"
+          } f-inputbody`}
         >
-          {/* Input Number */}
-          <input
-            id={name}
-            name={name}
-            ref={ref}
-            className=" Text-12-400 text-Gray-1000 rounded bg-inherit min-h-[26px] w-full"
-            type="number"
-            placeholder={placeholder}
-            value={data}
-            onChange={handleChange}
-            onFocus={handleOnFocus}
-            onBlur={handleBlur}
-            disabled={disabled}
-          />
-          {/* Helper Text */}
-          {fieldName && (
-            <div className="flex items-center f-field">
-              <label className="Text-10 text-Gray-600 " htmlFor={name}>
-                {fieldName}
-              </label>
+          <div
+            className={` w-full h-full flex items-center px-2 border rounded f-number ${
+              isFocused ? "--onFocus--" : ""
+            }`}
+          >
+            {/* Input Number */}
+            <input
+              id={name}
+              name={name}
+              ref={ref}
+              className=" Text-12-400 text-Gray-1000 rounded bg-inherit min-h-[26px] w-full"
+              type="number"
+              placeholder={placeholder}
+              value={data}
+              onChange={handleChange}
+              onFocus={handleOnFocus}
+              onBlur={handleBlur}
+              disabled={disabled}
+            />
+            {/* Helper Text */}
+            {fieldName && (
+              <div className="flex items-center f-field">
+                <label className="Text-10 text-Gray-600 " htmlFor={name}>
+                  {fieldName}
+                </label>
+              </div>
+            )}
+          </div>
+          {helperText && (
+            <div className="f-helpertext">
+              <p className="Text-12-400  text-Gray-900 ">{helperText}</p>
             </div>
           )}
         </div>
