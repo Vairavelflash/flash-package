@@ -72,7 +72,10 @@ export const InputNumber = React.forwardRef<HTMLInputElement, InputNumberProps>(
             {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
               <div className="flex items-center gap-2">
-                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                <label
+                  className="Text-14-400 font-normal --label--"
+                  htmlFor={name}
+                >
                   {label}
                 </label>
                 {mandatoryField && mandatoryField}

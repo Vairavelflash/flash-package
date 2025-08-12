@@ -51,7 +51,7 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
       <div
         className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
-        <div className={cn("w-full h-full flex items-center px-2 ")}>
+        <div className={cn("w-full h-full flex items-center gap-1")}>
           {/* Input Text */}
           <input
             id={value}

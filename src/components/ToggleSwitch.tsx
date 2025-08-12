@@ -82,14 +82,28 @@ export const ToggleSwitch = React.forwardRef<
               {mandatoryField && mandatoryField}
             </div>
           )}
+        </div>
+
+        <div className="w-full h-full flex items-center justify-start gap-1">
+          <input
+            id={name}
+            name={name}
+            ref={checkbox}
+            className="toggle-checkbox"
+            type="checkbox"
+            defaultChecked={value}
+            aria-checked={value}
+            // aria-labelledby={name}
+            disabled={disabled}
+          />
           {/* Side Label */}
           {sideLabel && (
             <label
-              className="Text-14-400  text-black capitalize sidelabel"
+              className="Text-14-400  text-black capitalize sidelabel "
               // aria-hidden={value}
               htmlFor={name}
             >
-              {value ? labelA : labelB}
+              {value ? labelB :labelA}
             </label>
           )}
           {/* Toggle */}
@@ -102,29 +116,20 @@ export const ToggleSwitch = React.forwardRef<
           >
             <span className="toggle  bg-black mr-px f-slidecircle"></span>
           </span>
+
+          {/* Helper Text */}
+          {fieldName && (
+            <div className="flex items-center  --field--">
+              <label
+                className="Text-10-400 text-Gray-600 whitespace-nowrap"
+                htmlFor={name}
+              >
+                {fieldName}
+              </label>
+            </div>
+          )}
+          {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
         </div>
-
-        <input
-          id={name}
-          name={name}
-          ref={checkbox}
-          className="toggle-checkbox"
-          type="checkbox"
-          defaultChecked={value}
-          aria-checked={value}
-          // aria-labelledby={name}
-          disabled={disabled}
-        />
-
-        {/* Helper Text */}
-        {fieldName && (
-          <div className="flex items-center  --field--">
-            <label className="Text-10-400 text-Gray-600 " htmlFor={name}>
-              {fieldName}
-            </label>
-          </div>
-        )}
-        {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
       </div>
     );
   }

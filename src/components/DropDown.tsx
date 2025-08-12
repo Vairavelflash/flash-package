@@ -118,7 +118,10 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
             {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
               <div className="flex items-center gap-2">
-                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                <label
+                  className="Text-14-400 font-normal --label--"
+                  htmlFor={name}
+                >
                   {label}
                 </label>
                 {mandatoryField && mandatoryField}
@@ -127,87 +130,91 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
           </div>
         ) : null}
 
-        <div
-          ref={dropdownRef}
-          className={cn(
-            "w-full h-full flex items-center relative border bg-inherit rounded px-2 --dropDown--",
-            (showDropdown || focus) && "--onFocus--"
-          )}
-          onClick={(e) => {
-            updatePosition(e);
-            if (disabled || showDropdown) {
-              setShowDropdown(false);
-            } else {
-              setShowDropdown(true);
-            }
-          }}
-        >
-          {/* Input Text */}
-          <input
-            id={name}
-            name={name}
-            ref={ref}
+        <div className="w-full h-full flex gap-0.5">
+          <div
+            ref={dropdownRef}
             className={cn(
-              "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded cursor-default bg-inherit  --text--"
+              "w-full h-full flex items-center relative border bg-inherit rounded px-2 --dropDown--",
+              (showDropdown || focus) && "--onFocus--"
             )}
-            type="text"
-            placeholder={placeholder}
-            value={data}
-            onChange={handleChange}
-            onFocus={focusfn}
-            onBlur={handleBlur}
-            disabled={disabled}
-            readOnly={true}
-            {...props}
-          />
-          <MdIcon
-            className={cn(
-              showDropdown ? "rotate-180 duration-200" : "rotate-0 duration-200"
-            )}
+            onClick={(e) => {
+              updatePosition(e);
+              if (disabled || showDropdown) {
+                setShowDropdown(false);
+              } else {
+                setShowDropdown(true);
+              }
+            }}
           >
-            <ExpandMoreIcon color="#1C1B1F" />
-          </MdIcon>
-          {showDropdown && (
-            <div
+            {/* Input Text */}
+            <input
+              id={name}
+              name={name}
+              ref={ref}
               className={cn(
-                "rounded-sm border bg-white left-0 absolute w-full max-h-40 overflow-y-auto drop-shadow-md z-50 --options--",
-                isAbove ? "bottom-full" : "top-full",
-                isLeft ? "right-0" : "left-0"
+                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded cursor-default bg-inherit  --text--"
+              )}
+              type="text"
+              placeholder={placeholder}
+              value={data}
+              onChange={handleChange}
+              onFocus={focusfn}
+              onBlur={handleBlur}
+              disabled={disabled}
+              readOnly={true}
+              {...props}
+            />
+            <MdIcon
+              className={cn(
+                showDropdown
+                  ? "rotate-180 duration-200"
+                  : "rotate-0 duration-200"
               )}
             >
-              {options?.length > 0 ? (
-                options.map((option: any, index: number) => (
-                  <div
-                    key={option.value}
-                    className={cn(
-                      "border-b Text-14-400 option",
-                      data === option?.label && "bg-blue-100",
-                      highlightedIndex === index && "bg-gray-100"
-                    )}
-                    onClick={() => {
-                      handleSelect(option?.label);
-                    }}
-                    tabIndex={0}
-                  >
-                    <p className="slice">{option.label}</p>
+              <ExpandMoreIcon color="#1C1B1F" />
+            </MdIcon>
+            {showDropdown && (
+              <div
+                className={cn(
+                  "rounded-sm border bg-white left-0 absolute w-full max-h-40 overflow-y-auto drop-shadow-md z-50 --options--",
+                  isAbove ? "bottom-full" : "top-full",
+                  isLeft ? "right-0" : "left-0"
+                )}
+              >
+                {options?.length > 0 ? (
+                  options.map((option: any, index: number) => (
+                    <div
+                      key={option.value}
+                      className={cn(
+                        "border-b Text-14-400 option",
+                        data === option?.label && "bg-blue-100",
+                        highlightedIndex === index && "bg-gray-100"
+                      )}
+                      onClick={() => {
+                        handleSelect(option?.label);
+                      }}
+                      tabIndex={0}
+                    >
+                      <p className="slice">{option.label}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className={cn("border-b Text-14-400 option")}>
+                    <p className="slice">No Data</p>
                   </div>
-                ))
-              ) : (
-                <div className={cn("border-b Text-14-400 option")}>
-                  <p className="slice">No Data</p>
-                </div>
-              )}
-            </div>
-          )}
-          {/* Helper Text */}
-          {/* {fieldName && (
+                )}
+              </div>
+            )}
+            {/* Helper Text */}
+            {/* {fieldName && (
               <div className="flex items-center  --field--">
-                <label className="Text-10-400 text-Gray-600 " htmlFor={name}>
+                <label className="Text-10 text-Gray-600 " htmlFor={name}>
                   {data.length > 0 ? fieldName : "--"}
                 </label>
               </div>
             )}
             {fieldIcon && <Fragment>{fieldIcon}</Fragment>} */}
+          </div>
         </div>
       </div>
     );

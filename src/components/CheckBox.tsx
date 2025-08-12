@@ -63,7 +63,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
             {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
               <div className="flex items-center gap-2">
-                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                <label
+                  className="Text-14-400 font-normal --label--"
+                  htmlFor={name}
+                >
                   {label}
                 </label>
                 {mandatoryField && mandatoryField}
@@ -72,18 +75,21 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
             {helperText && <Fragment>{helperText}</Fragment>}
           </div>
         ) : null}
-        <input
-          id={name}
-          name={name}
-          ref={ref}
-          className="accent-black  --checkbox--"
-          type="checkbox"
-          defaultChecked={check}
-          checked={check}
-          onChange={handleClick}
-          disabled={disabled}
-          {...props}
-        />
+
+        <div className="w-full h-full flex gap-0.5">
+          <input
+            id={name}
+            name={name}
+            ref={ref}
+            className="accent-black  --checkbox--"
+            type="checkbox"
+            defaultChecked={check}
+            checked={check}
+            onChange={handleClick}
+            disabled={disabled}
+            {...props}
+          />
+        </div>
       </div>
     );
   }
