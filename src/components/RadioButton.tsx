@@ -1,88 +1,94 @@
-import React from "react";
-import { getFlexDirection } from "./Common";
+import React, { Fragment, Ref } from "react";
+import { cn, MdIcon } from "./Common";
 import "./input.css";
-
 interface InputRadioProps {
   name: string;
-  helperText?: string;
   className?: string;
   value?: string;
   onChange: (name: string, value: boolean | string) => void;
   icon?: React.ReactNode;
-  orientation?: string;
   disabled?: boolean;
-  label?: string;
+  label: string;
   isSelected: boolean;
+  mandatoryField?: any;
+  fieldIcon?: React.ReactNode;
+  labelAlign?: "justify-start" | "justify-center" | "justify-end";
+  flexDirection?:
+    | "flex-row"
+    | "flex-col"
+    | "flex-row-reverse"
+    | "flex-column-reverse";
 }
 
 export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
   (
     {
       name,
-      helperText,
       className = "",
+      label,
       value,
       onChange,
       icon,
-      orientation = "horizontal",
       disabled = false,
+      fieldIcon,
+      mandatoryField,
+      labelAlign = "justify-start",
+      flexDirection = "flex-row",
       isSelected = false,
-      label = "",
     }: InputRadioProps,
-    ref
+    ref: Ref<HTMLInputElement>
   ) => {
-    const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // const [focus, focusfn] = useToggle();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
       if (onChange) {
-        onChange(name, e.target.value);
+        onChange(name, newValue);
       }
     };
 
-    const flexDirection: any = getFlexDirection[orientation] || "flex-row";
-
     return (
       <div
-        className={`w-full h-full flex gap-1 ${
-          helperText ? "items-start" : "items-center"
-        }  bg-inherit  ${className} ${flexDirection}  `}
+        className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
-        {/* Radio Button */}
-        <input
-          id={value}
-          name={name}
-          value={value}
-          ref={ref}
-          className="bg-black accent-black f-radio"
-          type="radio"
-          checked={isSelected}
-          onChange={handleClick}
-          disabled={disabled}
-        />
+        <div className={cn("w-full h-full flex items-center px-2 ")}>
+          {/* Input Text */}
+          <input
+            id={value}
+            name={name}
+            ref={ref}
+            className="bg-black accent-black --radio--"
+            type="radio"
+            value={value}
+            onChange={handleChange}
+            checked={isSelected}
+            // onFocus={focusfn}
+            disabled={disabled}
+          />
 
-        {/* Icon*/}
-        <div className="flex items-center gap-1 f-labelbody">
-          {icon && (
-            <div className="min-w-4 min-h-4 flex items-center justify-center f-icon">
-              {icon}
-            </div>
-          )}
-
-          {/* Label & helperText */}
-          <div className="flex flex-col">
-            <label
-              className="Text-12-400 whitespace-nowrap f-label"
-              htmlFor={value}
-            >
-              {label}
-            </label>
-            {helperText && (
-              <p className="Text-12-400  text-Gray-900 f-helpertext">
-                {helperText}
-              </p>
+          {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
+        </div>
+        {/* Icon - Label */}
+        {icon || label ? (
+          <div
+            className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
+          >
+            {icon && <MdIcon>{icon}</MdIcon>}
+            {label && (
+              <div className="flex items-center gap-2">
+                <label
+                  className="Text-14-400 whitespace-nowrapl --label--"
+                  htmlFor={value}
+                >
+                  {label}
+                </label>
+                {mandatoryField && mandatoryField}
+              </div>
             )}
           </div>
-        </div>
+        ) : null}
       </div>
     );
   }
 );
-RadioButton.displayName = "InputRadioButton";
+RadioButton.displayName = "RadioButton";

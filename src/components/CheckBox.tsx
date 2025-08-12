@@ -1,6 +1,7 @@
-import React, { Ref, useEffect, useState } from "react";
+import React, { Fragment, Ref, useEffect, useState } from "react";
+import { MdIcon } from "./Common";
 import "./input.css";
-import { getFlexDirection } from "./Common";
+
 interface InputCheckboxProps {
   name: string;
   label?: string;
@@ -8,9 +9,17 @@ interface InputCheckboxProps {
   value: boolean;
   onChange: (name: string, value: boolean | string) => void;
   disabled?: boolean;
-  orientation?: string;
-  icon?: React.ReactNode;
+  icon?: any;
+  mandatoryField?: any;
+  helperText?: any;
+  labelAlign?: "justify-start" | "justify-center" | "justify-end";
+  flexDirection?:
+    | "flex-row"
+    | "flex-col"
+    | "flex-row-reverse"
+    | "flex-column-reverse";
 }
+
 export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
   (
     {
@@ -21,53 +30,62 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
       onChange,
       icon,
       disabled = false,
-      orientation = "horizontal",
+      mandatoryField,
+      helperText,
+      labelAlign = "justify-start",
+      flexDirection = "flex-row",
+      ...props
     }: InputCheckboxProps,
     ref: Ref<HTMLInputElement>
   ) => {
     const [check, setCheck] = useState<boolean>(value);
-
     useEffect(() => {
       setCheck(value);
     }, [value]);
 
     const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setCheck(e.target.checked);
+      const checkValue = e.target.checked;
+      setCheck(checkValue);
       if (onChange) {
-        onChange(name, e.target.checked);
+        onChange(name, checkValue);
       }
     };
-    const flexDirection: any = getFlexDirection[orientation] || "flex-row";
+
     return (
       <div
-        className={`w-full h-full flex items-center justify-between bg-inherit ${className}
-          ${flexDirection} `}
+        className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
         {/* Icon - Label */}
-        <div className="flex items-center gap-1 f-labelbody">
-          {icon && (
-            <div className="min-w-4 min-h-4 flex items-center justify-center f-icon">
-              {icon}
-            </div>
-          )}
-          <label className="Text-12-400 f-label" htmlFor={name}>
-            {label}
-          </label>
-        </div>
-
-        {/* Checkbox */}
+        {icon || label ? (
+          <div
+            className={`w-full h-full flex items-center gap-1 ${labelAlign} --labelbody--`}
+          >
+            {icon && <MdIcon>{icon}</MdIcon>}
+            {label && (
+              <div className="flex items-center gap-2">
+                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                  {label}
+                </label>
+                {mandatoryField && mandatoryField}
+              </div>
+            )}
+            {helperText && <Fragment>{helperText}</Fragment>}
+          </div>
+        ) : null}
         <input
           id={name}
           name={name}
           ref={ref}
-          className="accent-black f-checkbox"
+          className="accent-black  --checkbox--"
           type="checkbox"
           defaultChecked={check}
+          checked={check}
           onChange={handleClick}
           disabled={disabled}
+          {...props}
         />
       </div>
     );
   }
 );
-Checkbox.displayName = "InputCheckbox";
+Checkbox.displayName = "Checkbox";

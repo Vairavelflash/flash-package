@@ -1,5 +1,7 @@
-import React, { Ref, useEffect, useState } from "react";
-import { getFlexDirection } from "./Common";
+import React, { Ref, useState } from "react";
+import { useToggle } from "./hooks";
+import { cn, MdIcon } from "./Common";
+import "./input.css";
 
 interface InputTextAreaProps {
   name: string;
@@ -10,10 +12,18 @@ interface InputTextAreaProps {
   onChange: (name: string, value: boolean | string) => void;
   icon?: React.ReactNode;
   disabled?: boolean;
-  orientation?: string;
   rows: number;
   cols: number;
-  helperText?: string;
+  fieldName?: string;
+  mandatoryField?: any;
+  fieldIcon?: React.ReactNode;
+  autoWidth?: boolean;
+  labelAlign?: "justify-start" | "justify-center" | "justify-end";
+  flexDirection?:
+    | "flex-row"
+    | "flex-col"
+    | "flex-row-reverse"
+    | "flex-column-reverse";
 }
 export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
   (
@@ -26,18 +36,20 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
       onChange,
       icon,
       disabled = false,
-      orientation = "horizontal",
       rows,
       cols,
-      helperText,
+      fieldName,
+      fieldIcon,
+      mandatoryField,
+      autoWidth = false,
+      labelAlign = "justify-start",
+      flexDirection = "flex-row",
+      ...props
     }: InputTextAreaProps,
     ref: Ref<HTMLDivElement>
   ) => {
     const [data, setData] = useState<string>(value);
-
-    useEffect(() => {
-      setData(value);
-    }, [value]);
+    const [focus, focusfn] = useToggle();
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.target.value;
@@ -47,52 +59,59 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
         onChange(name, newValue);
       }
     };
-    const flexDirection: any = getFlexDirection[orientation] || "flex-row";
+    const handleBlur = () => {
+      focusfn();
+      if (onChange) {
+        onChange(name, data);
+      }
+    };
     return (
       <div
         ref={ref}
-        className={`w-full h-full  flex items-center justify-between bg-inherit ${className}
-          ${flexDirection} `}
+        className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
         {/* Icon - Label */}
         {icon || label ? (
-          <div className="w-full h-full flex items-center gap-1  f-labelbody">
-            {icon && (
-              <div className="min-w-4 min-h-4 flex items-center justify-center f-icon">
-                {icon}
-              </div>
-            )}
+          <div
+            className={`w-full h-full flex items-baseline gap-1 justify-normal ${labelAlign} --labelbody--`}
+          >
+            {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
-              <label className="Text-12-400 font-normal f-label" htmlFor={name}>
-                {label}
-              </label>
+              <div className="flex items-center gap-2">
+                <label
+                  className="Text-14-400 font-normal --label--"
+                  htmlFor={name}
+                >
+                  {label}
+                </label>
+                {mandatoryField && mandatoryField}
+              </div>
             )}
           </div>
         ) : null}
 
         <div
-          className={`w-full h-full flex  gap-0.5 ${flexDirection} ${
-            helperText ? "items-start" : "items-center"
-          } f-inputbody`}
+          // className={` w-full h-full flex items-center border rounded p-2 --textbody-- ${
+          //   focus && "--onFocus--"
+          // }`}
+          className={cn("w-full h-full flex items-center border rounded p-2 --textbody--",focus && "--onFocus--", autoWidth && "textArea-autowidth")}
         >
           {/* Input TextArea */}
           <textarea
             id={name}
             name={name}
-            className=" Text-12-400 text-Gray-900 border-Gray-200 bg-inherit w-full border p-1 rounded f-textarea"
+            className=" Text-14-400 text-Gray-900  bg-inherit w-full --textarea--"
             placeholder={placeholder}
             value={data}
             onChange={handleChange}
+            onFocus={focusfn}
+            onBlur={handleBlur}
             disabled={disabled}
             rows={rows}
             cols={cols}
             style={{ resize: "none" }}
+            {...props}
           />
-          {helperText && (
-            <div className="f-helpertext">
-              <p className="Text-12-400  text-Gray-900 ">{helperText}</p>
-            </div>
-          )}
         </div>
       </div>
     );

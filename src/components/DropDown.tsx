@@ -1,133 +1,221 @@
-import React, { Fragment, Ref, useEffect, useRef, useState } from "react";
-import './input.css'
-interface ServersIconProps {
-  color?: string;
-}
+import React, { Ref, useEffect, useRef, useState } from "react";
+import { useClickOutside, useDropdownPosition, useToggle } from "./hooks";
+import { cn, MdIcon } from "./Common";
+import "./input.css";
 
 interface InputDropDownProps {
   name: string;
-  label?: string;
-  options: any;
-  value: string;
-  onChange: (name: string, value: boolean | string) => void;
   className?: string;
+  options: any;
+  label?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (name: string, value: string) => void;
+  icon?: React.ReactNode;
   disabled?: boolean;
-  slice?: number;
-  Lefticon?: React.ReactNode;
-  Righticon?: React.ReactNode;
+  mandatoryField?: any;
+  fieldIcon?: React.ReactNode;
+  labelAlign?: "justify-start" | "justify-center" | "justify-end";
+  flexDirection?:
+    | "flex-row"
+    | "flex-col"
+    | "flex-row-reverse"
+    | "flex-column-reverse";
+  left?: number;
+  top?: number;
 }
-export const Dropdown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
+
+export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
   (
     {
       name,
+      className = "",
       label,
       options,
+      placeholder,
       value,
       onChange,
-      className = "",
+      icon,
       disabled = false,
-      slice = 10,
-      Lefticon,
-      Righticon,
+      // fieldName,
+      // fieldIcon,
+      mandatoryField,
+      labelAlign = "justify-start",
+      flexDirection = "flex-row",
+      left = 150,
+      top = 260,
+      ...props
     }: InputDropDownProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [focus, focusfn] = useToggle();
 
-    const handleClick = () => {
-      setIsOpen(!isOpen);
+    const [data, setData] = useState<string>(value);
+    const [showDropdown, setShowDropdown] = useState<boolean>(false);
+
+    const [highlightedIndex, setHighlightedIndex] = useState<number>(-1); // track highlighted option
+    const { isAbove, isLeft, updatePosition } = useDropdownPosition(top, left);
+
+    useClickOutside(dropdownRef, () => setShowDropdown(false), showDropdown);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setData(newValue);
+      if (onChange) {
+        onChange(name, newValue);
+      }
     };
+    useEffect(() => {
+      setData(value);
+    }, [value]);
 
-    const handleSelect = (data: string) => {
-      if (!disabled && onChange) {
+    const handleBlur = () => {
+      focusfn();
+      if (onChange) {
         onChange(name, data);
-        setIsOpen(false);
       }
     };
 
-    useEffect(() => {
-      // If user clicks outside, close the DropDown
-      const handleClickOutside = (event: MouseEvent) => {
-        if (
-          dropdownRef.current &&
-          !dropdownRef.current.contains(event.target as Node)
-        ) {
-          setIsOpen(false);
+    const handleSelect = (data: string) => {
+      if (onChange) {
+        onChange(name, data);
+        setShowDropdown(false);
+        setHighlightedIndex(-1); // Reset highlight after selection
+      }
+    };
+
+    // Handle keydown for arrow navigation
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "ArrowDown") {
+        setHighlightedIndex((prevIndex) =>
+          prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
+        );
+      } else if (e.key === "ArrowUp") {
+        setHighlightedIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : prevIndex
+        );
+      } else if (e.key === "Enter") {
+        // Select the highlighted option
+        if (highlightedIndex >= 0 && highlightedIndex < options.length) {
+          handleSelect(options[highlightedIndex].label);
+        } else {
+          setShowDropdown(true);
         }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
+      }
+    };
 
     return (
       <div
-        ref={dropdownRef}
-        className={` w-full h-full flex items-center justify-between ${className}`}
+        className={`w-full h-full flex items-center justify-between bg-inherit relative ${flexDirection} ${className}`}
+        onKeyDown={handleKeyDown} // Attach keydown handler
       >
         {/* Icon - Label */}
-        {Lefticon || label ? (
-          <div className="w-1/2 h-full flex items-center gap-1  f-labelbody">
-            {Lefticon && <Fragment>{Lefticon}</Fragment>}
+        {icon || label ? (
+          <div
+            className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
+          >
+            {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
-              <label className="Text-12-400 font-normal f-label" htmlFor={name}>
-                {label}
-              </label>
+              <div className="flex items-center gap-2">
+                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                  {label}
+                </label>
+                {mandatoryField && mandatoryField}
+              </div>
             )}
           </div>
         ) : null}
 
-        {/* DropDown  */}
         <div
-          className={` ${
-            label ? "w-1/2 " : "w-full"
-          } h-full flex flex-row gap-1 relative f-dropDown`}
-          onClick={handleClick}
-          ref={ref}
+          ref={dropdownRef}
+          className={cn(
+            "w-full h-full flex items-center relative border bg-inherit rounded px-2 --dropDown--",
+            (showDropdown || focus) && "--onFocus--"
+          )}
+          onClick={(e) => {
+            updatePosition(e);
+            if (disabled || showDropdown) {
+              setShowDropdown(false);
+            } else {
+              setShowDropdown(true);
+            }
+          }}
         >
-          <div className="flex flex-row items-center justify-between rounded-sm  w-full h-7 px-2 py-1.5 gap-1 border  bg-Gray-200 f-textbody">
-            <p className="Text-12-400  slice">
-              {value.length > slice ? value.slice(0, slice) + "..." : value}
-            </p>
-
+          {/* Input Text */}
+          <input
+            id={name}
+            name={name}
+            ref={ref}
+            className={cn(
+              "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded cursor-default bg-inherit  --text--"
+            )}
+            type="text"
+            placeholder={placeholder}
+            value={data}
+            onChange={handleChange}
+            onFocus={focusfn}
+            onBlur={handleBlur}
+            disabled={disabled}
+            readOnly={true}
+            {...props}
+          />
+          <MdIcon
+            className={cn(
+              showDropdown ? "rotate-180 duration-200" : "rotate-0 duration-200"
+            )}
+          >
+            <ExpandMoreIcon color="#1C1B1F" />
+          </MdIcon>
+          {showDropdown && (
             <div
-              className={`min-w-4 min-h-4 flex items-center justify-center f-icon ${
-                isOpen ? "rotate-180 duration-200" : "rotate-0 duration-200"
-              }`}
+              className={cn(
+                "rounded-sm border bg-white left-0 absolute w-full max-h-40 overflow-y-auto drop-shadow-md z-50 --options--",
+                isAbove ? "bottom-full" : "top-full",
+                isLeft ? "right-0" : "left-0"
+              )}
             >
-              <ExpandMoreIcon color="#1C1B1F" />
-            </div>
-          </div>
-          {Righticon && <Fragment>{Righticon}</Fragment>}
-          {/* DropDown items */}
-          {isOpen && (
-            <div className="rounded-sm border bg-white top-full absolute w-full drop-shadow-md f-options z-[1]">
-              {options.map((option: any) => (
-                <div
-                  key={option.value}
-                  className="option border-b Text-12-400"
-                  onClick={(e) => {
-                    e.stopPropagation(); //Stop Calling other onClick events
-                    handleSelect(option?.label);
-                  }}
-                >
-                  <p className="slice f-optionLabel">{option.label}</p>
+              {options?.length > 0 ? (
+                options.map((option: any, index: number) => (
+                  <div
+                    key={option.value}
+                    className={cn(
+                      "border-b Text-14-400 option",
+                      data === option?.label && "bg-blue-100",
+                      highlightedIndex === index && "bg-gray-100"
+                    )}
+                    onClick={() => {
+                      handleSelect(option?.label);
+                    }}
+                    tabIndex={0}
+                  >
+                    <p className="slice">{option.label}</p>
+                  </div>
+                ))
+              ) : (
+                <div className={cn("border-b Text-14-400 option")}>
+                  <p className="slice">No Data</p>
                 </div>
-              ))}
+              )}
             </div>
           )}
+          {/* Helper Text */}
+          {/* {fieldName && (
+              <div className="flex items-center  --field--">
+                <label className="Text-10-400 text-Gray-600 " htmlFor={name}>
+                  {data.length > 0 ? fieldName : "--"}
+                </label>
+              </div>
+            )}
+            {fieldIcon && <Fragment>{fieldIcon}</Fragment>} */}
         </div>
       </div>
     );
   }
 );
-Dropdown.displayName = "InputDropdown";
+DropDown.displayName = "DropDown";
 
-export const ExpandMoreIcon: React.FC<ServersIconProps> = ({ color }) => {
+const ExpandMoreIcon = ({ color }: { color: string }) => {
   return (
     <svg
       width="8"

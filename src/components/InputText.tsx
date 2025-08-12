@@ -1,7 +1,8 @@
-import React, { Ref, useEffect, useState } from "react";
-import { getFlexDirection } from "./Common";
+import React, { Fragment, Ref, useState } from "react";
 import "./input.css";
-//common alignment object
+import { useToggle } from "./hooks";
+import { cn, MdIcon } from "./Common";
+
 
 interface InputTextProps {
   name: string;
@@ -13,9 +14,17 @@ interface InputTextProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   fieldName?: string;
-  orientation?: string;
-  helperText?: string;
+  mandatoryField?: any;
+  fieldIcon?: React.ReactNode;
+  labelAlign?: "justify-start" | "justify-center" | "justify-end";
+  flexDirection?:
+    | "flex-row"
+    | "flex-col"
+    | "flex-row-reverse"
+    | "flex-column-reverse";
+
 }
+
 export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
   (
     {
@@ -28,17 +37,16 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
       icon,
       disabled = false,
       fieldName,
-      orientation = "horizontal",
-      helperText,
+      fieldIcon,
+      mandatoryField,
+      labelAlign = "justify-start",
+      flexDirection = "flex-row",
+      ...props
     }: InputTextProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const [data, setData] = useState<string>(value);
-    const [isFocused, setIsFocused] = useState(false);
-
-    useEffect(() => {
-      setData(value);
-    }, [value]);
+    const [data, setData] = useState<string>(value|| "");
+    const [focus, focusfn] = useToggle();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -47,73 +55,67 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
         onChange(name, newValue);
       }
     };
-    const handleOnFocus = () => {
-      setIsFocused(true);
-    };
 
     const handleBlur = () => {
-      setIsFocused(false);
+      focusfn();
+      if (onChange) {
+        onChange(name, data);
+      }
     };
-    const flexDirection: any = getFlexDirection[orientation] || "flex-row";
-
     return (
       <div
-        className={`w-full h-full flex items-center justify-between bg-inherit ${className} ${flexDirection}`}
+        className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
         {/* Icon - Label */}
         {icon || label ? (
-          <div className="w-full h-full flex items-center gap-1  f-labelbody">
-            {icon && (
-              <div className="min-w-4 min-h-4 flex items-center justify-center f-icon">
-                {icon}
-              </div>
-            )}
+          <div
+            className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
+          >
+            {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
-              <label className="Text-12-400 font-normal f-label" htmlFor={name}>
-                {label}
-              </label>
+              <div className="flex items-center gap-2">
+                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                  {label}
+                </label>
+                {mandatoryField && mandatoryField}
+              </div>
             )}
           </div>
         ) : null}
-
-        <div
-          className={`w-full h-full flex  gap-0.5 ${flexDirection} ${
-            fieldName ? "items-start" : "items-center"
-          } f-inputbody`}
-        >
+        <div className="w-full h-full flex flex-col gap-0.5">
           <div
-            className={` w-full h-full flex items-center border rounded f-text px-1 ${
-              isFocused ? "--onFocus--" : ""
-            }`}
+            className={cn(
+              "w-full h-full flex items-center border bg-inherit rounded px-2 --textbody--",
+              focus && "--onFocus--"
+            )}
           >
             {/* Input Text */}
             <input
               id={name}
               name={name}
               ref={ref}
-              className="text-[14px] leading-5 font-normal text-Gray-900 min-h-[26px] w-full rounded bg-inherit f-text"
+              className={cn(
+                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded bg-inherit  --text--"
+              )}
               type="text"
               placeholder={placeholder}
               value={data}
               onChange={handleChange}
-              onFocus={handleOnFocus}
+              onFocus={focusfn}
               onBlur={handleBlur}
               disabled={disabled}
+              {...props}
             />
             {/* Helper Text */}
             {fieldName && (
-              <div className="flex items-center  f-field">
-                <label className="Text-10 text-Gray-600 " htmlFor={name}>
-                  {fieldName}
+              <div className="flex items-center whitespace-nowrap --field--">
+                <label className="Text-10-400 text-Gray-600 " htmlFor={name}>
+                  {data.length > 0 ? fieldName : "--"}
                 </label>
               </div>
             )}
+            {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
           </div>
-          {helperText && (
-            <div className="f-helpertext">
-              <p className="Text-12-400  text-Gray-900 ">{helperText}</p>
-            </div>
-          )}
         </div>
       </div>
     );
