@@ -1,4 +1,5 @@
 import "./global.css";
+import "./components/input.css"
 import { InputText } from "./components/InputText";
 import { InputNumber } from "./components/InputNumber";
 import { RadioButton } from "./components/RadioButton";

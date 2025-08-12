@@ -14,7 +14,7 @@ interface InputDropDownProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   mandatoryField?: any;
-  fieldIcon?: React.ReactNode;
+  // fieldIcon?: React.ReactNode;
   labelAlign?: "justify-start" | "justify-center" | "justify-end";
   flexDirection?:
     | "flex-row"
@@ -184,7 +184,7 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
                 {options?.length > 0 ? (
                   options.map((option: any, index: number) => (
                     <div
-                      key={option.value}
+                      key={option?.value}
                       className={cn(
                         "border-b Text-14-400 option",
                         data === option?.label && "bg-blue-100",

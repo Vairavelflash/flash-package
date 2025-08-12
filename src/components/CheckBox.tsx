@@ -84,7 +84,6 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
             className="accent-black  --checkbox--"
             type="checkbox"
             defaultChecked={check}
-            checked={check}
             onChange={handleClick}
             disabled={disabled}
             {...props}

@@ -1,11 +1,12 @@
 {
   "name": "flash-package",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "A highly customizable and lightning-fast component library featuring Input Text, Number, Checkbox, Dropdown, Color Picker, and more. Modify colors, fonts, and styles to suit your needs.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build:css": "tailwindcss -i ./src/global.css -o ./dist/index.css --minify",
+"build": "npm run build:css && tsup",
     "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
     "prepare": "npm run build"
   },
