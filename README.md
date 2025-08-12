@@ -2,7 +2,13 @@
 
 A highly customizable and lightning-fast component library featuring Input Text, Number, Checkbox, Dropdown and more. Modify colors, fonts, and styles to suit your needs.
 
+---
 
+## 🚀 Live Demo
+Try it instantly on StackBlitz:  
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/react-xmnvtfeu?file=src%2FApp.js)
+
+---
 
 ## Installation
 
