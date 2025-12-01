@@ -1,8 +1,7 @@
-import React, { Fragment, Ref, useState } from "react";
-import "./input.css";
+import React, {  Ref, useEffect, useState } from "react";
+// import "./input.css";
 import { useToggle } from "./hooks";
 import { cn, MdIcon } from "./Common";
-
 
 interface InputTextProps {
   name: string;
@@ -22,7 +21,6 @@ interface InputTextProps {
     | "flex-col"
     | "flex-row-reverse"
     | "flex-column-reverse";
-
 }
 
 export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
@@ -45,8 +43,13 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
     }: InputTextProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const [data, setData] = useState<string>(value|| "");
+    const [data, setData] = useState<string>(value || "");
     const [focus, focusfn] = useToggle();
+
+    // --- KEEP INPUT ALWAYS IN SYNC WITH PARENT ---
+    useEffect(() => {
+      setData(value);
+    }, [value]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -74,7 +77,10 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
             {icon && <MdIcon>{icon}</MdIcon>}
             {label && (
               <div className="flex items-center gap-2">
-                <label className="Text-14-400 font-normal --label--" htmlFor={name}>
+                <label
+                  className="Text-14-400 font-normal --label--"
+                  htmlFor={name}
+                >
                   {label}
                 </label>
                 {mandatoryField && mandatoryField}
@@ -82,7 +88,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
             )}
           </div>
         ) : null}
-        <div className="w-full h-full flex flex-col gap-0.5">
+        
           <div
             className={cn(
               "w-full h-full flex items-center border bg-inherit rounded px-2 --textbody--",
@@ -108,15 +114,13 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
             />
             {/* Helper Text */}
             {fieldName && (
-              <div className="flex items-center whitespace-nowrap --field--">
-                <label className="Text-10-400 text-Gray-600 " htmlFor={name}>
+                <label className="Text-10-400 text-Gray-600  whitespace-nowrap --field--" htmlFor={name}>
                   {data.length > 0 ? fieldName : "--"}
                 </label>
-              </div>
             )}
-            {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
+            {fieldIcon}
           </div>
-        </div>
+       
       </div>
     );
   }
