@@ -1,4 +1,4 @@
-import React, { Ref, useState } from "react";
+import React, { Ref, useEffect, useState } from "react";
 import { useToggle } from "./hooks";
 import { cn, MdIcon } from "./Common";
 import "./input.css";
@@ -51,14 +51,19 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
     const [data, setData] = useState<string>(value);
     const [focus, focusfn] = useToggle();
 
+    // --- KEEP INPUT ALWAYS IN SYNC WITH PARENT ---
+    useEffect(() => {
+      setData(value);
+    }, [value]);
+
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.target.value;
-
       setData(newValue);
       if (onChange) {
         onChange(name, newValue);
       }
     };
+
     const handleBlur = () => {
       focusfn();
       if (onChange) {
@@ -84,13 +89,13 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
                 >
                   {label}
                 </label>
-                {mandatoryField && mandatoryField}
+                {mandatoryField }
               </div>
             )}
           </div>
         ) : null}
 
-        <div className="w-full h-full flex gap-0.5">
+       
           <div
             className={cn(
               "w-full h-full flex items-center border rounded p-2 --textbody--",
@@ -115,7 +120,7 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
               {...props}
             />
           </div>
-        </div>
+    
       </div>
     );
   }
