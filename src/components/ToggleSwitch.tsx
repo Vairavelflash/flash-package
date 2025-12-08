@@ -1,21 +1,25 @@
-import React, { Fragment, Ref, useRef } from "react";
-import "./input.css";
-import { MdIcon } from "./Common";
+import React, { Ref } from "react";
+
+import { cn, MdIcon } from "./Common";
 
 interface ToggleSwitchProps {
   name: string;
-  className?: string;
   label?: string;
-  disabled?: boolean;
-  sideLabel?: boolean;
-  labelA?: string;
-  labelB?: string;
   value: boolean;
   onChange: (name: string, value: boolean | string) => void;
-  fieldName?: string;
-  mandatoryField?: any;
+  className?: string;
+  disabled?: boolean;
+
+  onLabel?: string;
+  offLabel?: string;
+
   icon?: React.ReactNode;
-  fieldIcon?: React.ReactNode;
+  HelperNode?: React.ReactNode;
+  sideLabel?: boolean;
+
+  fieldName?: string;
+  mandatoryField?: React.ReactNode;
+
   labelAlign?: "justify-start" | "justify-center" | "justify-end";
   flexDirection?:
     | "flex-row"
@@ -30,105 +34,98 @@ export const ToggleSwitch = React.forwardRef<
   (
     {
       name,
-      className = "",
       label,
-      disabled = false,
-      sideLabel,
-      labelA = "Off",
-      labelB = "On",
-      value,
+      value=false,
       onChange,
+      className = "",
+      disabled = false,
+
+      onLabel = "Off",
+      offLabel = "On",
+      sideLabel,
+
       icon,
-      fieldName,
-      fieldIcon,
+      HelperNode,
       mandatoryField,
       labelAlign = "justify-start",
       flexDirection = "flex-row",
     }: ToggleSwitchProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const toggle = useRef<HTMLInputElement>(null); //For changing style
-    const checkbox = useRef<HTMLInputElement>(null); //checkbox state
-    function handleToggle() {
+    const id:string = `${name}-toggle`
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!disabled) {
-        //check disabled state
-        if (onChange) {
-          (toggle.current as HTMLInputElement).classList.toggle("toggled");
-          const currentState = ((checkbox.current as HTMLInputElement).checked =
-            !(checkbox.current as HTMLInputElement).checked);
-          onChange(name, currentState);
-        }
+        onChange(name, e.target.checked);
       }
-    }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onChange(name, !value);
+      }
+    };
 
     return (
       <div
-        ref={ref}
         className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
         {/* Icon - Label */}
         <div
           className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
         >
-          {icon && <MdIcon>{icon}</MdIcon>}
-          {label && (
-            <div className="flex items-center gap-2">
-              <label
-                className="Text-14-400 font-normal --label--"
-                htmlFor={name}
-              >
-                {label}
-              </label>
-              {mandatoryField && mandatoryField}
-            </div>
-          )}
+          <label
+            className="flex items-center gap-1 Text-14-400 font-normal cursor-pointer select-none --label--"
+            htmlFor={id}
+          >
+            {icon && <MdIcon>{icon}</MdIcon>}
+            {label}
+          </label>
+          {mandatoryField}
         </div>
 
-        <div className="w-full h-full flex items-center justify-start gap-1">
+        <div className="w-full h-full flex items-center justify-start gap-1  --component-body--">
+          {/* Custom switch */}
           <input
-            id={name}
+            ref={ref}
+            id={id}
             name={name}
-            ref={checkbox}
-            className="toggle-checkbox"
             type="checkbox"
-            defaultChecked={value}
-            aria-checked={value}
-            // aria-labelledby={name}
+            checked={value}
+            onChange={handleChange}
             disabled={disabled}
+            className="sr-only peer"
+            aria-checked={value}
           />
+
           {/* Side Label */}
           {sideLabel && (
             <label
-              className="Text-14-400  text-black capitalize sidelabel "
-              // aria-hidden={value}
-              htmlFor={name}
+              className="Text-14-400  text-black capitalize whitespace-nowrap sidelabel "
+              htmlFor={id}
             >
-              {value ? labelB :labelA}
+              {value ? onLabel : offLabel}
             </label>
           )}
+
           {/* Toggle */}
-          <span
-            ref={toggle}
-            onClick={handleToggle}
-            className={`toggle-switch  border-black  f-slidebox ${
-              value ? "toggled" : ""
-            }`}
+          <button
+            role="switch"
+            disabled={disabled}
+            onClick={() => !disabled && onChange(name, !value)}
+            onKeyDown={handleKeyDown}
+            tabIndex={disabled ? -1 : 0}
+            className={cn(
+              "toggle-switch  border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 f-slidebox ",
+              value && "toggled",
+              disabled && "opacity-50 cursor-not-allowed"
+            )}
           >
             <span className="toggle  bg-black mr-px f-slidecircle"></span>
-          </span>
+          </button>
 
           {/* Helper Text */}
-          {fieldName && (
-            <div className="flex items-center  --field--">
-              <label
-                className="Text-10-400 text-Gray-600 whitespace-nowrap"
-                htmlFor={name}
-              >
-                {fieldName}
-              </label>
-            </div>
-          )}
-          {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
+          {HelperNode}
         </div>
       </div>
     );

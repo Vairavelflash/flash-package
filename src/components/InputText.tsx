@@ -91,7 +91,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
         
           <div
             className={cn(
-              "w-full h-full flex items-center border bg-inherit rounded px-2 --textbody--",
+              "w-full h-full flex items-center border bg-inherit rounded  --textbody--",
               focus && "--onFocus--"
             )}
           >
@@ -101,7 +101,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
               name={name}
               ref={ref}
               className={cn(
-                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded bg-inherit  --text--"
+                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded bg-inherit px-2 --text--"
               )}
               type="text"
               placeholder={placeholder}
