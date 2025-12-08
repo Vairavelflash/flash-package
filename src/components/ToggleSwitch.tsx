@@ -35,7 +35,7 @@ export const ToggleSwitch = React.forwardRef<
     {
       name,
       label,
-      value=false,
+      value = false,
       onChange,
       className = "",
       disabled = false,
@@ -52,7 +52,7 @@ export const ToggleSwitch = React.forwardRef<
     }: ToggleSwitchProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const id:string = `${name}-toggle`
+    const id: string = `${name}-toggle`;
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!disabled) {
         onChange(name, e.target.checked);
@@ -71,18 +71,20 @@ export const ToggleSwitch = React.forwardRef<
         className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
         {/* Icon - Label */}
-        <div
-          className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
-        >
-          <label
-            className="flex items-center gap-1 Text-14-400 font-normal cursor-pointer select-none --label--"
-            htmlFor={id}
+        {icon || label ? (
+          <div
+            className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
           >
-            {icon && <MdIcon>{icon}</MdIcon>}
-            {label}
-          </label>
-          {mandatoryField}
-        </div>
+            <label
+              className="flex items-center gap-2 Text-14-400 font-normal cursor-pointer select-none --label--"
+              htmlFor={id}
+            >
+              {icon && <MdIcon>{icon}</MdIcon>}
+              {label}
+            </label>
+            {mandatoryField}
+          </div>
+        ) : null}
 
         <div className="w-full h-full flex items-center justify-start gap-1  --component-body--">
           {/* Custom switch */}
@@ -116,7 +118,7 @@ export const ToggleSwitch = React.forwardRef<
             onKeyDown={handleKeyDown}
             tabIndex={disabled ? -1 : 0}
             className={cn(
-              "toggle-switch  border-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 f-slidebox ",
+              "toggle-switch  border-black   f-slidebox ",
               value && "toggled",
               disabled && "opacity-50 cursor-not-allowed"
             )}

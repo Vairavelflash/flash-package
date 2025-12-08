@@ -1,4 +1,4 @@
-import React, {  Ref, useEffect, useState } from "react";
+import React, { Ref, useEffect, useState } from "react";
 // import "./input.css";
 import { useToggle } from "./hooks";
 import { cn, MdIcon } from "./Common";
@@ -30,7 +30,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
       className = "",
       label,
       placeholder,
-      value,
+      value="",
       onChange,
       icon,
       disabled = false,
@@ -43,7 +43,9 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
     }: InputTextProps,
     ref: Ref<HTMLInputElement>
   ) => {
-    const [data, setData] = useState<string>(value || "");
+    const id: string = `${name}-toggle`;
+
+    const [data, setData] = useState<string>(value);
     const [focus, focusfn] = useToggle();
 
     // --- KEEP INPUT ALWAYS IN SYNC WITH PARENT ---
@@ -74,53 +76,52 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
           <div
             className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
           >
-            {icon && <MdIcon>{icon}</MdIcon>}
-            {label && (
-              <div className="flex items-center gap-2">
-                <label
-                  className="Text-14-400 font-normal --label--"
-                  htmlFor={name}
-                >
-                  {label}
-                </label>
-                {mandatoryField && mandatoryField}
-              </div>
-            )}
+            <label
+              className="flex items-center gap-2 Text-14-400 font-normal cursor-pointer select-none --label--"
+              htmlFor={id}
+            >
+              {icon && <MdIcon>{icon}</MdIcon>}
+              {label}
+            </label>
+
+            {mandatoryField}
           </div>
         ) : null}
-        
-          <div
+
+        <div
+          className={cn(
+            "w-full h-full flex items-center border bg-inherit rounded  --textbody--",
+            focus && "--onFocus--"
+          )}
+        >
+          {/* Input Text */}
+          <input
+            id={id}
+            name={name}
+            ref={ref}
             className={cn(
-              "w-full h-full flex items-center border bg-inherit rounded  --textbody--",
-              focus && "--onFocus--"
+              "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded bg-inherit px-2 --text--"
             )}
-          >
-            {/* Input Text */}
-            <input
-              id={name}
-              name={name}
-              ref={ref}
-              className={cn(
-                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded bg-inherit px-2 --text--"
-              )}
-              type="text"
-              placeholder={placeholder}
-              value={data}
-              onChange={handleChange}
-              onFocus={focusfn}
-              onBlur={handleBlur}
-              disabled={disabled}
-              {...props}
-            />
-            {/* Helper Text */}
-            {fieldName && (
-                <label className="Text-10-400 text-Gray-600  whitespace-nowrap --field--" htmlFor={name}>
-                  {data.length > 0 ? fieldName : "--"}
-                </label>
-            )}
-            {fieldIcon}
-          </div>
-       
+            type="text"
+            placeholder={placeholder}
+            value={data}
+            onChange={handleChange}
+            onFocus={focusfn}
+            onBlur={handleBlur}
+            disabled={disabled}
+            {...props}
+          />
+          {/* Helper Text */}
+          {fieldName && (
+            <label
+              className="Text-10-400 text-Gray-600  whitespace-nowrap --field--"
+              htmlFor={id}
+            >
+             {fieldName}
+            </label>
+          )}
+          {fieldIcon}
+        </div>
       </div>
     );
   }
