@@ -1,16 +1,16 @@
-import React, { Fragment, Ref } from "react";
+import React, { Ref } from "react";
 import { cn, MdIcon } from "./Common";
 import "./input.css";
 interface InputRadioProps {
   name: string;
   className?: string;
-  value?: string;
-  onChange: (name: string, value: boolean | string) => void;
+  value: string;
+  onChange: (name: string, value: string) => void;
   icon?: React.ReactNode;
   disabled?: boolean;
   label: string;
   isSelected: boolean;
-  mandatoryField?: any;
+  mandatoryField?: React.ReactNode;
   fieldIcon?: React.ReactNode;
   labelAlign?: "justify-start" | "justify-center" | "justify-end";
   flexDirection?:
@@ -51,6 +51,19 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
       <div
         className={`w-full h-full flex items-baseline justify-between bg-inherit  ${flexDirection} ${className}`}
       >
+        {/* Icon - Label */}
+        <div
+          className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
+        >
+          <label htmlFor={value} className="flex items-center gap-1">
+            {icon && <MdIcon>{icon}</MdIcon>}
+            {label && (
+              <p className="Text-14-400 whitespace-nowrap --label--">{label}</p>
+            )}
+          </label>
+          {mandatoryField}
+        </div>
+
         <div className={cn("w-full h-full flex items-center gap-1")}>
           {/* Input Text */}
           <input
@@ -66,27 +79,8 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
             disabled={disabled}
           />
 
-          {fieldIcon && <Fragment>{fieldIcon}</Fragment>}
+          {fieldIcon}
         </div>
-        {/* Icon - Label */}
-        {icon || label ? (
-          <div
-            className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
-          >
-            {icon && <MdIcon>{icon}</MdIcon>}
-            {label && (
-              <div className="flex items-center gap-2">
-                <label
-                  className="Text-14-400 whitespace-nowrapl --label--"
-                  htmlFor={value}
-                >
-                  {label}
-                </label>
-                {mandatoryField && mandatoryField}
-              </div>
-            )}
-          </div>
-        ) : null}
       </div>
     );
   }
