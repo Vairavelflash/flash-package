@@ -32,7 +32,7 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
       className,
       label,
       placeholder,
-      value,
+      value="",
       onChange,
       icon,
       disabled = false,
@@ -48,6 +48,8 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
     }: InputTextAreaProps,
     ref: Ref<HTMLDivElement>
   ) => {
+    const id: string = `${name}-toggle`;
+
     const [data, setData] = useState<string>(value);
     const [focus, focusfn] = useToggle();
 
@@ -80,18 +82,15 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
           <div
             className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
           >
-            {icon && <MdIcon>{icon}</MdIcon>}
-            {label && (
-              <div className="flex items-center gap-2">
-                <label
-                  className="Text-14-400 font-normal --label--"
-                  htmlFor={name}
-                >
-                  {label}
-                </label>
-                {mandatoryField}
-              </div>
-            )}
+            <label
+              className="flex items-center gap-2 Text-14-400 font-normal cursor-pointer select-none --label--"
+              htmlFor={id}
+            >
+              {icon && <MdIcon>{icon}</MdIcon>}
+              {label}
+            </label>
+
+            {mandatoryField}
           </div>
         ) : null}
 
@@ -104,7 +103,7 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
         >
           {/* Input TextArea */}
           <textarea
-            id={name}
+            id={id}
             name={name}
             className=" Text-14-400 text-Gray-900  bg-inherit w-full --textarea--"
             placeholder={placeholder}
