@@ -5,15 +5,20 @@ import "./input.css";
 
 interface InputDropDownProps {
   name: string;
-  className?: string;
-  options: any;
   label?: string;
-  placeholder?: string;
   value: string;
   onChange: (name: string, value: string) => void;
-  icon?: React.ReactNode;
+  className?: string;
   disabled?: boolean;
+
+  options: any;
+
+  icon?: React.ReactNode;
   mandatoryField?: any;
+
+  placeholder?: string;
+  left?: number;
+  top?: number;
   // fieldIcon?: React.ReactNode;
   labelAlign?: "justify-start" | "justify-center" | "justify-end";
   flexDirection?:
@@ -21,22 +26,22 @@ interface InputDropDownProps {
     | "flex-col"
     | "flex-row-reverse"
     | "flex-column-reverse";
-  left?: number;
-  top?: number;
 }
 
 export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
   (
     {
       name,
-      className = "",
       label,
-      options,
-      placeholder,
-      value,
+      value = "Select",
       onChange,
-      icon,
       disabled = false,
+      className = "",
+
+      options,
+
+      icon,
+      placeholder,
       // fieldName,
       // fieldIcon,
       mandatoryField,
@@ -48,6 +53,8 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
     }: InputDropDownProps,
     ref: Ref<HTMLInputElement>
   ) => {
+    const id: string = `${name}-toggle`;
+
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [focus, focusfn] = useToggle();
 
@@ -115,26 +122,23 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
           <div
             className={`w-full h-full flex items-center gap-1 justify-normal ${labelAlign} --labelbody--`}
           >
-            {icon && <MdIcon>{icon}</MdIcon>}
-            {label && (
-              <div className="flex items-center gap-2">
-                <label
-                  className="Text-14-400 font-normal --label--"
-                  htmlFor={name}
-                >
-                  {label}
-                </label>
-                {mandatoryField && mandatoryField}
-              </div>
-            )}
+            <label
+              className="flex items-center gap-2 Text-14-400 font-normal cursor-pointer select-none --label--"
+              htmlFor={id}
+            >
+              {icon && <MdIcon>{icon}</MdIcon>}
+              {label}
+            </label>
+
+            {mandatoryField}
           </div>
         ) : null}
 
-        <div className="w-full h-full flex gap-0.5">
+ 
           <div
             ref={dropdownRef}
             className={cn(
-              "w-full h-full flex items-center relative border bg-inherit rounded px-2 --dropDown--",
+              "w-full h-full flex items-center relative border bg-inherit rounded  --dropDown--",
               (showDropdown || focus) && "--onFocus--"
             )}
             onClick={(e) => {
@@ -148,11 +152,11 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
           >
             {/* Input Text */}
             <input
-              id={name}
+              id={id}
               name={name}
               ref={ref}
               className={cn(
-                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full rounded cursor-default bg-inherit  --text--"
+                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full px-2 rounded cursor-default bg-inherit  --text--"
               )}
               type="text"
               placeholder={placeholder}
@@ -176,7 +180,7 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
             {showDropdown && (
               <div
                 className={cn(
-                  "rounded-sm border bg-white left-0 absolute w-full max-h-40 overflow-y-auto drop-shadow-md z-50 --options--",
+                  "rounded-sm border bg-white left-0 absolute w-full max-h-40  drop-shadow-md z-50 --options--",
                   isAbove ? "bottom-full" : "top-full",
                   isLeft ? "right-0" : "left-0"
                 )}
@@ -215,7 +219,7 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
             )}
             {fieldIcon && <Fragment>{fieldIcon}</Fragment>} */}
           </div>
-        </div>
+   
       </div>
     );
   }

@@ -109,6 +109,7 @@ export const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(
             onFocus={focusfn}
             onBlur={handleBlur}
             disabled={disabled}
+            autoComplete="off"
             {...props}
           />
           {/* Helper Text */}

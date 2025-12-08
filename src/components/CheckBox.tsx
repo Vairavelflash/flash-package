@@ -39,6 +39,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
     ref: Ref<HTMLInputElement>
   ) => {
     const [check, setCheck] = useState<boolean>(value);
+
     useEffect(() => {
       setCheck(value);
     }, [value]);
@@ -83,7 +84,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
             ref={ref}
             className="accent-black hover:bg-gray-700 --checkbox--"
             type="checkbox"
-            defaultChecked={check}
+            checked={check}
             onChange={handleClick}
             disabled={disabled}
             {...props}

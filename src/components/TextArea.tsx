@@ -96,7 +96,7 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
 
         <div
           className={cn(
-            "w-full h-full flex items-center border rounded p-2 --textbody--",
+            "w-full h-full flex items-center border rounded  --textbody--",
             focus && "--onFocus--",
             autoWidth && "textArea-autowidth"
           )}
@@ -105,7 +105,7 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
           <textarea
             id={id}
             name={name}
-            className=" Text-14-400 text-Gray-900  bg-inherit w-full --textarea--"
+            className=" Text-14-400 text-Gray-900 p-2 bg-inherit w-full --textarea--"
             placeholder={placeholder}
             value={data}
             onChange={handleChange}
