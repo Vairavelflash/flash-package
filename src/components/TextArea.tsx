@@ -39,7 +39,7 @@ export const TextArea = React.forwardRef<HTMLInputElement, InputTextAreaProps>(
       rows,
       cols,
       fieldName,
-      fieldIcon,
+      // fieldIcon,
       mandatoryField,
       autoWidth = false,
       labelAlign = "justify-start",

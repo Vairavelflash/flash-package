@@ -1,6 +1,6 @@
 {
   "name": "flash-package",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "A highly customizable and lightning-fast component library featuring Input Text, Number, Checkbox, Dropdown, Color Picker, and more. Modify colors, fonts, and styles to suit your needs.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

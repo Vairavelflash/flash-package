@@ -1,22 +1,29 @@
 import React, { Ref, useEffect, useRef, useState } from "react";
-import { useClickOutside, useDropdownPosition, useToggle } from "./hooks";
+import { useClickOutside, useDropdownPosition } from "./hooks";
 import { cn, MdIcon } from "./Common";
 import "./input.css";
 
+interface DropdownOptions {
+  label: string;
+  value: string;
+  disabled?: boolean;
+}
 interface InputDropDownProps {
   name: string;
   label?: string;
+
   value: string;
   onChange: (name: string, value: string) => void;
+
+  options: DropdownOptions[];
+
+  placeholder?: string;
   className?: string;
   disabled?: boolean;
-
-  options: any;
 
   icon?: React.ReactNode;
   mandatoryField?: any;
 
-  placeholder?: string;
   left?: number;
   top?: number;
   // fieldIcon?: React.ReactNode;
@@ -35,18 +42,21 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
       label,
       value = "Select",
       onChange,
-      disabled = false,
-      className = "",
 
       options,
 
-      icon,
       placeholder,
+      disabled = false,
+      className = "",
+
+      icon,
+      mandatoryField,
+
       // fieldName,
       // fieldIcon,
-      mandatoryField,
       labelAlign = "justify-start",
       flexDirection = "flex-row",
+
       left = 150,
       top = 260,
       ...props
@@ -56,7 +66,7 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
     const id: string = `${name}-toggle`;
 
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [focus, focusfn] = useToggle();
+    // const [focus, focusfn] = useToggle();
 
     const [data, setData] = useState<string>(value);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -77,12 +87,12 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
       setData(value);
     }, [value]);
 
-    const handleBlur = () => {
-      focusfn();
-      if (onChange) {
-        onChange(name, data);
-      }
-    };
+    // const handleBlur = () => {
+    //   focusfn();
+    //   if (onChange) {
+    //     onChange(name, data);
+    //   }
+    // };
 
     const handleSelect = (data: string) => {
       if (onChange) {
@@ -105,10 +115,13 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
       } else if (e.key === "Enter") {
         // Select the highlighted option
         if (highlightedIndex >= 0 && highlightedIndex < options.length) {
-          handleSelect(options[highlightedIndex].label);
+          handleSelect(options[highlightedIndex].value);
         } else {
           setShowDropdown(true);
         }
+      } else if (e.key === "Escape") {
+        setShowDropdown(false);
+        setHighlightedIndex(-1);
       }
     };
 
@@ -134,83 +147,81 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
           </div>
         ) : null}
 
- 
-          <div
-            ref={dropdownRef}
+        <div
+          ref={dropdownRef}
+          className={cn(
+            "w-full h-full flex items-center relative border bg-inherit rounded  --dropDown--",
+            (showDropdown ) && "--onFocus--"
+          )}
+          onClick={(e) => {
+            updatePosition(e);
+            if (disabled || showDropdown) {
+              setShowDropdown(false);
+            } else {
+              setShowDropdown(true);
+            }
+          }}
+        >
+          {/* Input Text */}
+          <input
+            id={id}
+            name={name}
+            ref={ref}
             className={cn(
-              "w-full h-full flex items-center relative border bg-inherit rounded  --dropDown--",
-              (showDropdown || focus) && "--onFocus--"
+              "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full px-2 rounded cursor-default bg-inherit  --text--"
             )}
-            onClick={(e) => {
-              updatePosition(e);
-              if (disabled || showDropdown) {
-                setShowDropdown(false);
-              } else {
-                setShowDropdown(true);
-              }
-            }}
+            type="text"
+            placeholder={placeholder}
+            value={data}
+            onChange={handleChange}
+            // onFocus={focusfn}
+            // onBlur={handleBlur}
+            disabled={disabled}
+            readOnly
+            {...props}
+          />
+          <MdIcon
+            className={cn(
+              showDropdown ? "rotate-180 duration-200" : "rotate-0 duration-200"
+            )}
           >
-            {/* Input Text */}
-            <input
-              id={id}
-              name={name}
-              ref={ref}
+            <ExpandMoreIcon color="#1C1B1F" />
+          </MdIcon>
+          {showDropdown && (
+            <div
               className={cn(
-                "Text-14-400 text-Gray-900 min-h-[26px] h-7 w-full px-2 rounded cursor-default bg-inherit  --text--"
-              )}
-              type="text"
-              placeholder={placeholder}
-              value={data}
-              onChange={handleChange}
-              onFocus={focusfn}
-              onBlur={handleBlur}
-              disabled={disabled}
-              readOnly={true}
-              {...props}
-            />
-            <MdIcon
-              className={cn(
-                showDropdown
-                  ? "rotate-180 duration-200"
-                  : "rotate-0 duration-200"
+                "rounded-sm border bg-white left-0 absolute w-full max-h-40  drop-shadow-md z-50 --options--",
+                isAbove ? "bottom-full" : "top-full",
+                isLeft ? "right-0" : "left-0"
               )}
             >
-              <ExpandMoreIcon color="#1C1B1F" />
-            </MdIcon>
-            {showDropdown && (
-              <div
-                className={cn(
-                  "rounded-sm border bg-white left-0 absolute w-full max-h-40  drop-shadow-md z-50 --options--",
-                  isAbove ? "bottom-full" : "top-full",
-                  isLeft ? "right-0" : "left-0"
-                )}
-              >
-                {options?.length > 0 ? (
-                  options.map((option: any, index: number) => (
-                    <div
-                      key={option?.value}
-                      className={cn(
-                        "border-b Text-14-400 option",
-                        data === option?.label && "bg-blue-100",
-                        highlightedIndex === index && "bg-gray-100"
-                      )}
-                      onClick={() => {
-                        handleSelect(option?.label);
-                      }}
-                      tabIndex={0}
-                    >
-                      <p className="slice">{option.label}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className={cn("border-b Text-14-400 option")}>
-                    <p className="slice">No Data</p>
+              {options?.length > 0 ? (
+                options.map((option: any, index: number) => (
+                  <div
+                    key={option?.value}
+                    className={cn(
+                      "border-b Text-14-400 option",
+                      option?.disabled && "opacity-50 pointer-events-none",
+                      data === option?.value && "!bg-blue-100",
+                      highlightedIndex === index && "!bg-gray-100"
+                    )}
+                    onClick={() => {
+                      handleSelect(option?.value);
+                    }}
+                    tabIndex={0}
+                  >
+                    <p className="slice">{option.label}</p>
                   </div>
-                )}
-              </div>
-            )}
-            {/* Helper Text */}
-            {/* {fieldName && (
+                ))
+              ) : (
+                <div className={cn("border-b Text-14-400 option")}>
+                  <p className="slice">No Data</p>
+                </div>
+              )}
+            </div>
+          )}
+          {/* Helper Text */}
+          {/* {fieldName && (
               <div className="flex items-center  --field--">
                 <label className="Text-10 text-Gray-600 " htmlFor={name}>
                   {data.length > 0 ? fieldName : "--"}
@@ -218,8 +229,7 @@ export const DropDown = React.forwardRef<HTMLInputElement, InputDropDownProps>(
               </div>
             )}
             {fieldIcon && <Fragment>{fieldIcon}</Fragment>} */}
-          </div>
-   
+        </div>
       </div>
     );
   }

@@ -35,6 +35,7 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
       labelAlign = "justify-start",
       flexDirection = "flex-row",
       isSelected = false,
+      ...props
     }: InputRadioProps,
     ref: Ref<HTMLInputElement>
   ) => {
@@ -77,6 +78,13 @@ export const RadioButton = React.forwardRef<HTMLInputElement, InputRadioProps>(
             checked={isSelected}
             // onFocus={focusfn}
             disabled={disabled}
+             onKeyDown={(e) => {
+              if (e.key === " " || e.key === "Enter") {
+                e.preventDefault();
+                onChange(name, value);
+              }
+            }}
+            {...props}
           />
 
           {fieldIcon}

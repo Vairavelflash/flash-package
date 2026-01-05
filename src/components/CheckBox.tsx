@@ -1,4 +1,4 @@
-import React, { Fragment, Ref, useEffect, useState } from "react";
+import React, {  Ref, useEffect, useState } from "react";
 import { MdIcon } from "./Common";
 import "./input.css";
 
@@ -70,10 +70,10 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
                 >
                   {label}
                 </label>
-                {mandatoryField && mandatoryField}
+                {mandatoryField}
               </div>
             )}
-            {helperText && <Fragment>{helperText}</Fragment>}
+            {helperText}
           </div>
         ) : null}
 
@@ -87,7 +87,14 @@ export const Checkbox = React.forwardRef<HTMLInputElement, InputCheckboxProps>(
             checked={check}
             onChange={handleClick}
             disabled={disabled}
+            onKeyDown={(e) => {
+              if (e.key === " " || e.key === "Enter") {
+                e.preventDefault();
+                onChange(name, !check);
+              }
+            }}
             {...props}
+
           />
         </div>
       </div>
