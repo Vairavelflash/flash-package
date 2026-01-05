@@ -23,175 +23,223 @@ npm install flash-package
 
 import {
   Checkbox,
-  Dropdown,
+  DropDown,
   InputNumber,
   InputText,
   RadioButton,
   TextArea,
   ToggleSwitch,
 } from "flash-package";
+import "flash-package/dist/index.css";
 import { useState } from "react";
 
-const options = [
-  { value: "Option 1", label: "Always Off" },
-  { value: "Option 2", label: "Option 2" },
-  { value: "Option 3", label: "Option 3" },
-];
-
 export default function App() {
-const [form, setForm] = useState({
-    username: "dd",
-    number: 9,
-    radio: "",
-    toggle: true,
-    checkbox: true,
-    dropDown: "",
-    textarea: "textAreaaaa",
+  const [form, setForm] = useState({
+    username: 'steve',
+    age: 9,
+    about_yourself: 'textArea',
+    react: true,
+    angular: false,
+    gender: '',
+    enable_message: true,
+    country: '',
   });
-  const onChange = (name: string, value: string | boolean | number) => {
-    setForm((prevState: any) => ({
+
+  const [direction, setDirection] = useState('flex-row');
+  const [labelAlign, setLabelAlign] = useState('');
+
+  const onChange = (name, value) => {
+    setForm((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
+
+  console.log('form values', form);
+
   return (
-    <div className="w-[100%] h-[100%]">
-    <InputText
-          name="username"
-          value={form?.username}
-          onChange={onChange}
-          label="User Name"
-          icon={<Icon1 />}
-          fieldName="FN"
-          className="cls"
-          fieldIcon={<Icon2 />}
-          mandatoryField={"*"}
-          disabled={false}
-          flexDirection="flex-row"
-          labelAlign="justify-start"
-          placeholder="Placeholder"
-        />
+    <div className="w-full h-full flex flex-col gap-5 p-5 ">
+      <button
+        onClick={() => onChange('username', 'Tony Stark')}
+        className="p-2 rounded border-gray-500 px-2 py-1"
+      >
+        Change User Name From Parent component
+      </button>
 
-         <InputNumber
-          name="number"
-          value={form?.number}
-          onChange={onChange}
-          label="Text"
-          icon={<Icon />}
-          fieldName="FN"
-          className="cls"
-          fieldIcon={<Icon />}
-          mandatoryField={"*"}
-          disabled={false}
-          flexDirection="flex-row"
-          labelAlign="justify-start"
-          placeholder="Placeholder"
-        />
+      <div className="flex items-center w-full justify-between my-2">
+        {['justify-start', 'justify-center', 'justify-end'].map((i) => (
+          <button
+            key={i}
+            onClick={() => setLabelAlign(i)}
+            className="border rounded border-gray-500 px-2 py-1 capitalize"
+          >
+            {i}
+          </button>
+        ))}
+      </div>
 
-         <RadioButton
-          name="radioGroup"
-          value="High"
-          onChange={onChange}
-          className=""
-          isSelected={form?.radioGroup === "High"}
-          label="High"
-          fieldIcon={<Icon />}
-          flexDirection="flex-row"
-          icon={<Icon />}
-          labelAlign="justify-start"
-          mandatoryField={"#"}
-          disabled={false}
+      <div className="flex items-center w-full justify-between my-2">
+        {['flex-col', 'flex-row', 'flex-col-reverse', 'flex-row-reverse'].map(
+          (i) => (
+            <button
+              key={i}
+              onClick={() => setDirection(i)}
+              className="border rounded border-gray-500 px-2 py-1 capitalize"
+            >
+              {i}
+            </button>
+          )
+        )}
+      </div>
 
-        />
-        <RadioButton
-          name="radioGroup"
-          value="Low"
-          onChange={onChange}
-          className=""
-          isSelected={form?.radioGroup === "Low"}
-          label="Low"
-          fieldIcon={<Icon />}
-          flexDirection="flex-row"
-          icon={<Icon />}
-          labelAlign="justify-start"
-          mandatoryField={"#"}
-          disabled={false}
+      <InputText
+        name="username"
+        value={form?.username}
+        onChange={onChange}
+        label="User Name"
+        icon={'👤'}
+        fieldName="Mr/Mrs"
+        className="cls"
+        fieldIcon={<User className="w-4 h-4 ml-1" />}
+        mandatoryField={'*'}
+        disabled={false}
+        flexDirection={direction}
+        labelAlign={labelAlign}
+        placeholder="Placeholder"
+      />
 
-        />
+      <InputNumber
+        name="age"
+        value={form?.age}
+        onChange={onChange}
+        label="Age"
+        icon={<Phone className="w-4 h-4" />}
+        fieldName="YEARS"
+        className="cls"
+        fieldIcon={'🔞'}
+        mandatoryField={'*'}
+        disabled={false}
+        flexDirection={direction}
+        labelAlign={labelAlign}
+        placeholder="Placeholder"
+      />
 
-         <ToggleSwitch
-          name="switch"
-          onChange={onChange}
-          value={form?.switch}
-          fieldIcon={<Icon />}
-          fieldName="Fn"
-          flexDirection="flex-row"
-          icon={<Icon />}
-          label="Label"
-          mandatoryField={"%"}
-          sideLabel={true}
-          disabled={false}
-          className="cls"
-          labelA="Yes"
-          labelB="No"
-          labelAlign="justify-start"
-        />
+      <RadioButton
+        name="gender"
+        value="Male"
+        onChange={onChange}
+        className=""
+        isSelected={form?.gender === 'Male'}
+        label="Male"
+        fieldIcon={'🚹'}
+        flexDirection={direction}
+        icon={'🚹'}
+        labelAlign={labelAlign}
+        mandatoryField={<p className="text-red-600">*</p>}
+        disabled={false}
+      />
+      <RadioButton
+        name="gender"
+        value="Female"
+        onChange={onChange}
+        className=""
+        isSelected={form?.gender === 'Female'}
+        label="Female"
+        fieldIcon={'🚺'}
+        flexDirection={direction}
+        icon={'🚺'}
+        labelAlign={labelAlign}
+        mandatoryField={'*'}
+        disabled={false}
+      />
 
+      <ToggleSwitch
+        name="enable_message"
+        onChange={onChange}
+        value={form?.enable_message}
+        flexDirection={direction}
+        icon={'🔄️'}
+        label="Enable Message"
+        mandatoryField={'*'}
+        sideLabel={true}
+        disabled={false}
+        className="cls border-b"
+        offLabel="No"
+        onLabel="Yes"
+        labelAlign={labelAlign}
+        HelperNode={<p>helper</p>}
+      />
 
-         <Checkbox
-          name="veg"
-          onChange={onChange}
-          value={form?.veg}
-          className="cls"
-          flexDirection="flex-row"
-          helperText={"cool"}
-          icon={<Icon />}
-          label="Label"
-          labelAlign="justify-start"
-          mandatoryField={"#"}
-          disabled={false}
-          
-        />
+      <Checkbox
+        name="react"
+        onChange={onChange}
+        value={form?.react}
+        className="cls"
+        flexDirection={direction}
+        helperText={<h6 className="text-sm">Found by Facebook</h6>}
+        icon={'1️⃣'}
+        label="React"
+        labelAlign={labelAlign}
+        mandatoryField={'*'}
+        disabled={false}
+      />
+      <Checkbox
+        name="angular"
+        onChange={onChange}
+        value={form?.angular}
+        className="cls"
+        flexDirection={direction}
+        helperText={<h6 className="text-sm">Found by Google</h6>}
+        icon={'2️⃣'}
+        label="Angular"
+        labelAlign={labelAlign}
+        mandatoryField={'*'}
+        disabled={false}
+      />
 
-        <DropDown
-          name="min"
-          className=""
-          placeholder="mins"
-          onChange={onChange}
-          value={form.min}
-          options={option}
-          flexDirection="flex-row"
-          icon={<Icon/>}
-          label="Label"
-          labelAlign="justify-start"
-          mandatoryField={"*"}
-          disabled={false}
-          left={150}
-          top={250}
-        />
+      <DropDown
+        name="country"
+        className=""
+        placeholder="Select Any Country"
+        onChange={onChange}
+        value={form.country}
+        options={options}
+        flexDirection={direction}
+        icon={'🌎'}
+        label="Country"
+        labelAlign={labelAlign}
+        mandatoryField={'*'}
+        disabled={false}
+        left={150}
+        top={150}
+      />
 
-
-         <TextArea
-          name="textarea"
-          cols={3}
-          onChange={onChange}
-          rows={3}
-          value={form?.textarea}
-          fieldIcon={<Icon />}
-          fieldName="FN"
-          flexDirection="flex-row"
-          icon={<Icon />}
-          label="Label"
-          labelAlign="justify-start"
-          mandatoryField={"#"}
-          className="cls"
-          autoWidth={true}
-          disabled={false}
-          placeholder="Placeholder"
-        />
-        
+      <TextArea
+        name="about_yourself"
+        cols={3}
+        onChange={onChange}
+        rows={3}
+        value={form?.about_yourself}
+        fieldName="FN"
+        flexDirection={direction}
+        icon={'📁'}
+        label="About Yourself"
+        labelAlign={labelAlign}
+        mandatoryField={'*'}
+        className="cls"
+        autoWidth={true}
+        disabled={false}
+        placeholder="Placeholder"
+      />
     </div>
-  )
-
+  );
 }
+
+const options = [
+  { value: '', label: 'Select Any' },
+  { value: 'Option 1', label: 'Option 1' },
+  { value: 'Option 2', label: 'Option 2' },
+  { value: 'Option 3', label: 'Option 3', disabled: true },
+];
+
 ```
